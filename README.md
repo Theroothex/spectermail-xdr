@@ -1,15 +1,15 @@
 # SpecterMail XDR - Email Intelligence & Analysis Platform
 
-SpecterMail XDR is a Flask-based email intelligence platform for parsing email content, extracting IOCs, correlating indicators, mapping evidence to MITRE ATT&CK, and producing analyst-friendly intelligence reports.
+SpecterMail XDR is a Flask-based Email Intelligence & Analysis Platform that helps analyze email content, perform SPF, DKIM, and DMARC checks, extract URLs and domains, gather domain intelligence information, identify Indicators of Compromise (IOCs) and generate investigation reports.
 
-## Key Capabilities
+## Features
 
 - EML, TXT, and pasted-content analysis
 - URL normalization for `http`, `https`, `hxxp`, `hxxps`, `www`, bare domains, and defanged domains
 - IOC extraction for domains, emails, IPv4, IPv6, MD5, SHA1, and SHA256
 - Header analysis for SPF, DKIM, DMARC, Reply-To mismatch, Return-Path mismatch, and suspicious sender TLDs
-- Multi-layer indicator detection for urgency, credential theft, brand impersonation, suspicious domains, suspicious TLDs, shorteners, IOC density, and authentication failures
-- Risk level, confidence score, observed findings, MITRE evidence, PDF report, IOC export, dashboard, and scan history
+- Multi-layer indicator detection for urgency, credential theft, brand impersonation, suspicious domains, suspicious TLDs, IOC density, and authentication failures
+- Risk level, confidence score, PDF report, IOC export, dashboard, and scan history
 
 ## Screenshots
 
@@ -31,46 +31,84 @@ SpecterMail XDR is a Flask-based email intelligence platform for parsing email c
 ### Scan History
 ![Scan History](screenshots/06_scan_history.png)
 
-## Setup
+## Technology Stack
 
-```powershell
+Python
+
+Flask
+
+SQLAlchemy
+
+ReportLab
+
+dnspython
+
+python-whois
+
+validators
+
+tldextract
+
+## Installation
+
+git clone https://github.com/Theroothex/spectermail-xdr.git
+cd spectermail-xdr
+
 python -m venv venv
-.\venv\Scripts\Activate.ps1
+venv\Scripts\activate
+
 pip install -r requirements.txt
+
 copy .env.example .env
+
 python run.py
-```
 
 Set a strong `SECRET_KEY` in `.env` before using the app outside local development.
 
-## Security Controls
+## Security Features
 
-- Environment-driven secret/config management
-- CSRF token on the analysis form
-- Request size limit and basic rate limiting
-- Upload extension allow-list and path traversal protection
-- Runtime files stored under `instance/`
-- Secure response headers
-- Per-analysis report files to prevent latest-report overwrites
-- Rotating application, security, audit, and analysis logs
-- PDF output escaping to prevent ReportLab markup injection
+Input Validation
+File Upload Validation (Supports .txt and .eml files)
+Random Secret Key Configuration
+Basic Rate Limiting
+Secure PDF Report Generation
+IOC (Indicators of Compromise) Report Generation
+Scan History Tracking
+Application Logging
 
 ## Scoring
 
-The internal threat score is capped at 100 and combines authentication failures, suspicious domains, brand impersonation, credential-theft language, urgency language, IOC density, suspicious TLDs, shorteners, URL reputation, domain age, URL count, and keyword indicators. Scores map to risk levels (Informational, Low, Medium, High, Critical) without producing definitive email classifications.
+The platform analyzes multiple email indicators and assigns a threat score and risk level based on the findings.
 
-## Reporting Model
+Risk Levels:
 
-Reports present analysis status, risk level, confidence score, indicator count, observed findings, IOC intelligence, authentication analysis, domain intelligence, URL intelligence, MITRE ATT&CK mapping, evidence-based analyst summaries, and actionable recommendations.
+Informational
+Low
+Medium
+High
+Critical
+
+## Reporting 
+
+The generated report includes:
+
+Risk Level
+Confidence Score
+Extracted IOCs
+SPF Pass/Fail Status
+DKIM Pass/Fail Status
+DMARC Pass/Fail Status
+Domain & URL Intelligence
+Analyst Summary
 
 ## testing
 
-```powershell
 pytest
-```
 
 The current regression tests cover URL normalization, IOC validation, header spoofing resistance, and score capping.
 
-## Security Review
+## Author
 
-See `SECURITY_REVIEW.md` for architecture diagrams, trust boundaries, detection pipeline mapping, bypass scenarios, scoring formulas, viva questions, and remaining risks.
+Sandeep Mandal
+
+GitHub: https://github.com/Theroothex
