@@ -11,6 +11,26 @@ SpecterMail XDR is a Flask-based email intelligence platform for parsing email c
 - Multi-layer indicator detection for urgency, credential theft, brand impersonation, suspicious domains, suspicious TLDs, shorteners, IOC density, and authentication failures
 - Risk level, confidence score, observed findings, MITRE evidence, PDF report, IOC export, dashboard, and scan history
 
+## Screenshots
+
+### Dashboard
+![Dashboard](screenshots/01_dashboard.png)
+
+### Email Upload
+![Email Upload](screenshots/02_email_upload.png)
+
+### Analysis Overview
+![Analysis Overview](screenshots/03_analysis_overview.png)
+
+### Threat Indicators
+![Threat Indicators](screenshots/04_threat_indicators.png)
+
+### IOC Intelligence
+![IOC Intelligence](screenshots/05_ioc_intelligence.png)
+
+### Scan History
+![Scan History](screenshots/06_scan_history.png)
+
 ## Setup
 
 ```powershell
