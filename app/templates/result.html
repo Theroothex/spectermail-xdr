@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Email Intelligence Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+    {% set risk = result.risk|default('UNKNOWN', true) %}
+    {% set risk_class = risk.lower() %}
+    {% set scorecard = result.security_scorecard if result.security_scorecard is mapping else {} %}
+    {% set score_breakdown = result.score_breakdown if result.score_breakdown is mapping else {} %}
+    {% set iocs = result.ioc_findings if result.ioc_findings is mapping else {} %}
+    {% set observed = result.observed_findings if result.observed_findings is sequence else [] %}
+
+    <h1 class="title">
+        Email Intelligence Report
+    </h1>
+
+    <div class="card">
+
+        <h3>Analysis Overview</h3>
+
+        <p class="trust-item">
+            <strong>Analysis Status:</strong>
+            {{ result.analysis_status|default('Completed', true) }}
+        </p>
+
+        <p class="trust-item">
+            <strong>Risk Level:</strong>
+            <span class="{{ risk_class }}">
+                {{ result.risk_level|default(risk, true) }}
+            </span>
+        </p>
+
+        <p class="trust-item">
+            <strong>Confidence Score:</strong>
+            {{ result.confidence }}%
+        </p>
+
+        <p class="trust-item">
+            <strong>Indicators Identified:</strong>
+            {{ result.indicator_count|default(observed|length, true) }}
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Observed Findings</h3>
+
+        {% if observed %}
+
+            <ul>
+
+                {% for item in observed %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No significant indicators were observed during automated analysis.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Threat Indicators</h3>
+
+        <table class="score-table">
+
+            {% for category, score in score_breakdown.items() %}
+
+            <tr>
+
+                <td>{{ category }}</td>
+
+                <td>{% if score is number and score >= 0 %}+{% endif %}{{ score }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Analysis Scorecard</h3>
+
+        <table class="score-table">
+
+            {% for item, value in scorecard.items() %}
+
+            <tr>
+
+                <td>{{ item }}</td>
+
+                <td>{{ value }}/100</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <div class="card">
+
+        <h3>IOC Intelligence</h3>
+
+        <p><strong>Domains:</strong> {{ iocs.domains|default([])|length }}</p>
+        <p><strong>Emails:</strong> {{ iocs.emails|default([])|length }}</p>
+        <p><strong>URLs:</strong> {{ result.urls|default([])|length }}</p>
+        <p><strong>IP Addresses:</strong> {{ (iocs.ips|default([])|length) + (iocs.ipv4|default([])|length) + (iocs.ipv6|default([])|length) }}</p>
+        <p><strong>Hashes:</strong> {{ (iocs.hashes|default([])|length) + (iocs.md5|default([])|length) + (iocs.sha1|default([])|length) + (iocs.sha256|default([])|length) }}</p>
+
+        <h4>Extracted IOCs</h4>
+
+        <h4>IP Addresses</h4>
+
+        {% set ip_list = iocs.ips|default([]) + iocs.ipv4|default([]) + iocs.ipv6|default([]) %}
+        {% if ip_list %}
+
+            <ul>
+
+                {% for ip in ip_list %}
+
+                    <li>{{ ip }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>None detected</p>
+
+        {% endif %}
+
+        <h4>Email Addresses</h4>
+
+        {% if iocs.emails %}
+
+            <ul>
+
+                {% for email in iocs.emails %}
+
+                    <li>{{ email }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>None detected</p>
+
+        {% endif %}
+
+        <h4>Domains</h4>
+
+        {% if iocs.domains %}
+
+            <ul>
+
+                {% for domain in iocs.domains %}
+
+                    <li>{{ domain }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>None detected</p>
+
+        {% endif %}
+
+        <h4>Hashes</h4>
+
+        {% set hash_list = iocs.hashes|default([]) + iocs.md5|default([]) + iocs.sha1|default([]) + iocs.sha256|default([]) %}
+        {% if hash_list %}
+
+            <ul>
+
+                {% for hash in hash_list %}
+
+                    <li>{{ hash }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>None detected</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Authentication Analysis</h3>
+
+        {% if result.header_findings %}
+
+            <ul>
+
+                {% for finding in result.header_findings %}
+
+                    <li>{{ finding }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No authentication observations recorded.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Domain Intelligence</h3>
+
+        {% if result.domain_findings %}
+
+            <ul>
+
+                {% for finding in result.domain_findings %}
+
+                    <li>{{ finding }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No domain intelligence observations recorded.</p>
+
+        {% endif %}
+
+        <h4>Domain Age Intelligence</h4>
+
+        {% if result.domain_age_findings %}
+
+            <ul>
+
+                {% for item in result.domain_age_findings %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No WHOIS data available.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>URL Intelligence</h3>
+
+        <p>
+            <strong>Total URLs Found:</strong>
+            {{ result.urls|length }}
+        </p>
+
+        <p>
+            <strong>Unique Domains:</strong>
+            {{ result.unique_domains|default(iocs.domains|default([])|length, true) }}
+        </p>
+
+        {% if result.url_reputation_findings %}
+
+            <ul>
+
+                {% for item in result.url_reputation_findings %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No URL reputation observations recorded.</p>
+
+        {% endif %}
+
+        <h4>URL Shortener Analysis</h4>
+
+        {% if result.shortener_findings %}
+
+            <ul>
+
+                {% for item in result.shortener_findings %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No URL shorteners detected.</p>
+
+        {% endif %}
+
+        <h4>Suspicious TLD Analysis</h4>
+
+        {% if result.tld_findings %}
+
+            <ul>
+
+                {% for item in result.tld_findings %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No suspicious TLD observations recorded.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Detected Keywords</h3>
+
+        {% if result.keywords %}
+
+            <ul>
+
+                {% for keyword in result.keywords %}
+
+                    <li>{{ keyword }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No keyword indicators detected.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Sender Reputation</h3>
+
+        <p>
+            <strong>Status:</strong>
+            {{ result.sender_reputation }}
+        </p>
+
+        {% if result.reputation_findings %}
+
+            <ul>
+
+                {% for item in result.reputation_findings %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No reputation intelligence available.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Brand Verification</h3>
+
+        {% if result.brand_findings %}
+
+            <ul>
+
+                {% for item in result.brand_findings %}
+
+                    <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No brand impersonation indicators detected.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Attachment Analysis</h3>
+
+        {% if result.attachment_findings %}
+
+            <ul>
+
+                {% for finding in result.attachment_findings %}
+
+                    <li>{{ finding }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No attachment indicators detected.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>MITRE ATT&CK Mapping</h3>
+
+        {% if result.mitre_techniques %}
+
+            <ul>
+
+                {% for technique in result.mitre_techniques %}
+
+                    <li>
+
+                        <strong>{{ technique.id }}</strong>
+                        -
+                        {{ technique.name }}
+                        {% if technique.confidence %}
+                            ({{ technique.confidence }}%)
+                        {% endif %}
+
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No MITRE ATT&CK techniques triggered.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>Analyst Summary</h3>
+
+        <p>
+            {{ result.analyst_summary }}
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Recommendations</h3>
+
+        {% if result.recommendations %}
+
+            <ul>
+
+                {% for action in result.recommendations %}
+
+                    <li>{{ action }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No recommendations available.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="action-buttons">
+
+        <a href="/" class="action-btn">
+            Analyze Another Email
+        </a>
+
+        <a href="{{ url_for('home.download_report', analysis_id=result.analysis_id) }}" class="action-btn">
+            Download PDF Report
+        </a>
+
+        <a href="{{ url_for('home.export_ioc', analysis_id=result.analysis_id) }}" class="action-btn">
+            Export IOC Report
+        </a>
+
+    </div>
+
+    <a href="/history">
+    View Scan History
+    </a>
+
+</div>
+
+
+</body>
+
+</html>

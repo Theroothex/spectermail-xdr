@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Intelligence Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="title">
+        Intelligence Dashboard
+    </h1>
+
+    <p class="subtitle">
+        Scan activity and risk level summary
+    </p>
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Scan Overview
+        </h2>
+
+        <table class="score-table">
+
+            <tr>
+
+                <td>Total Scans</td>
+
+                <td>{{ total_scans }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Informational</td>
+
+                <td>{{ risk_counts.get('INFORMATIONAL', 0) }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Low Risk</td>
+
+                <td>{{ risk_counts.get('LOW', 0) }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Medium Risk</td>
+
+                <td>{{ risk_counts.get('MEDIUM', 0) }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>High Risk</td>
+
+                <td>{{ risk_counts.get('HIGH', 0) }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Critical Risk</td>
+
+                <td>{{ risk_counts.get('CRITICAL', 0) }}</td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="action-buttons">
+
+        <a href="/" class="action-btn">
+            Analyze Email
+        </a>
+
+        <a href="/history" class="action-btn">
+            View History
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

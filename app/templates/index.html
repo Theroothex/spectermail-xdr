@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>
+        SpecterMail XDR
+    </title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ═══════════════════════════════════════════
+         HERO SECTION
+    ═══════════════════════════════════════════ -->
+
+    <div class="hero">
+        <h1 class="title">
+            SpecterMail XDR
+        </h1>
+        <p class="subtitle">
+            SOC-Oriented Email Intelligence & Analysis Platform
+        </p>
+        <p class="description">
+            Analyze email messages, investigate links,
+            extract Indicators of Compromise (IOCs), map threat techniques,
+            and generate professional email intelligence reports.
+        </p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         ERROR MESSAGE BLOCK
+         - Rendered by Flask via Jinja2
+         - Auto-hides after 6 seconds
+         - Smooth fade transition
+         - Manual dismiss button
+         - Does NOT persist after GET refresh
+    ═══════════════════════════════════════════ -->
+
+    {% if error %}
+    <div class="error-box" id="errorBox">
+        <span class="error-icon">⚠</span>
+        <span class="error-text">{{ error }}</span>
+        <button
+            class="error-dismiss"
+            onclick="dismissError()"
+            aria-label="Dismiss error">
+            &times;
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- ═══════════════════════════════════════════
+         ANALYSIS FORM
+    ═══════════════════════════════════════════ -->
+
+    <form method="POST"
+          enctype="multipart/form-data"
+          class="analysis-form">
+        <input type="hidden"
+               name="_csrf_token"
+               value="{{ csrf_token() }}">
+
+        <!-- ─────────────────────────────────────
+             PASTE EMAIL CONTENT
+        ───────────────────────────────────────── -->
+
+        <div class="card">
+            <h2 class="section-title">
+                Paste Email Content
+            </h2>
+            <p class="section-text">
+                Supported input:
+                Email Headers,
+                Email Body,
+                Raw Email Source,
+                Complete Email Content
+            </p>
+            <textarea
+                name="email_content"
+                placeholder="Paste email headers, body content, MIME source, or complete raw email data here for threat analysis...">
+            </textarea>
+        </div>
+
+        <!-- ─────────────────────────────────────
+             DIVIDER
+        ───────────────────────────────────────── -->
+
+        <div class="divider">
+            OR
+        </div>
+
+        <!-- ─────────────────────────────────────
+             UPLOAD EMAIL FILE
+             - Custom styled label (no raw input shown)
+             - Supported format badges
+             - Blocked formats listed clearly
+             - Filename shown after selection
+        ───────────────────────────────────────── -->
+
+        <div class="card">
+            <h2 class="section-title">
+                Upload Email File
+            </h2>
+            <p class="section-text">
+                Supported formats:
+                <span class="badge-allowed">.eml</span>
+                <span class="badge-allowed">.txt</span>
+            </p>
+            <p class="section-text format-note">
+                Blocked:
+                .pdf &nbsp;
+                .docx &nbsp;
+                .xlsx &nbsp;
+                .jpg &nbsp;
+                .png &nbsp;
+                .zip &nbsp;
+                .exe
+            </p>
+
+            <label
+                class="file-upload-label"
+                id="fileLabel"
+                for="email_file">
+                <span class="upload-icon">📎</span>
+                <span
+                    class="upload-label-text"
+                    id="uploadLabelText">
+                    Click to choose a .eml or .txt file
+                </span>
+            </label>
+
+            <input
+                type="file"
+                id="email_file"
+                name="email_file"
+                accept=".eml,.txt"
+                class="file-input-hidden"
+                onchange="handleFileSelect(this)">
+        </div>
+
+        <!-- ─────────────────────────────────────
+             SUBMIT BUTTON
+        ───────────────────────────────────────── -->
+
+        <div class="button-area">
+            <button
+                type="submit"
+                class="analyze-btn">
+                Analyze Email
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+     - Error auto-hide (stable, no sessionStorage)
+     - Manual dismiss
+     - File selection feedback
+═══════════════════════════════════════════ -->
+
+<script>
+
+    // ─────────────────────────────────────────────
+    // ERROR AUTO-HIDE
+    //
+    // Waits 6 seconds then fades out over 600ms.
+    // Transition is applied via JS only at fade time
+    // so there is no flicker on initial render.
+    // No sessionStorage used — Flask POST/redirect
+    // already prevents stale errors on GET refresh.
+    // ─────────────────────────────────────────────
+
+    (function () {
+
+        var box = document.getElementById("errorBox");
+
+        if (!box) return;
+
+        var hideDelay = 6000;
+        var fadeMs    = 600;
+
+        var timer = setTimeout(function () {
+
+            box.style.transition = "opacity " + fadeMs + "ms ease";
+            box.style.opacity    = "0";
+
+            setTimeout(function () {
+                if (box && box.parentNode) {
+                    box.parentNode.removeChild(box);
+                }
+            }, fadeMs);
+
+        }, hideDelay);
+
+        // Store timer reference on the element so
+        // dismissError() can cancel it if user
+        // clicks the dismiss button before auto-hide fires.
+
+        box._autoHideTimer = timer;
+
+    })();
+
+
+    // ─────────────────────────────────────────────
+    // MANUAL DISMISS
+    //
+    // Cancels the auto-hide timer so it does not
+    // fire after the element is already removed.
+    // ─────────────────────────────────────────────
+
+    function dismissError() {
+
+        var box = document.getElementById("errorBox");
+
+        if (!box) return;
+
+        if (box._autoHideTimer) {
+            clearTimeout(box._autoHideTimer);
+        }
+
+        var fadeMs = 300;
+
+        box.style.transition = "opacity " + fadeMs + "ms ease";
+        box.style.opacity    = "0";
+
+        setTimeout(function () {
+            if (box && box.parentNode) {
+                box.parentNode.removeChild(box);
+            }
+        }, fadeMs);
+
+    }
+
+
+    // ─────────────────────────────────────────────
+    // FILE SELECTION FEEDBACK
+    //
+    // Updates the upload label text to show the
+    // selected filename and adds a visual state class
+    // so the user knows their file has been chosen.
+    // ─────────────────────────────────────────────
+
+    function handleFileSelect(input) {
+
+        var label     = document.getElementById("uploadLabelText");
+        var fileLabel = document.getElementById("fileLabel");
+
+        if (!label || !fileLabel) return;
+
+        if (input.files && input.files.length > 0) {
+
+            var name = input.files[0].name;
+
+            label.textContent = "✔  " + name;
+            fileLabel.classList.add("file-selected");
+
+        } else {
+
+            label.textContent = "Click to choose a .eml or .txt file";
+            fileLabel.classList.remove("file-selected");
+
+        }
+
+    }
+
+</script>
+
+</body>
+</html>

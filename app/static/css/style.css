@@ -1,0 +1,494 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #020617;
+    color: #f8fafc;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 40px;
+}
+
+.title {
+    font-size: 48px;
+    color: #38bdf8;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #0ea5e9;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin-bottom: 35px;
+    font-size: 18px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   TEXTAREA
+   Improved: padding, font, focus glow, placeholder
+═══════════════════════════════════════════════════ */
+
+textarea {
+    width: 100%;
+    min-height: 240px;
+    max-height: 500px;
+    resize: vertical;
+    background: #0a1120;
+    color: #e2e8f0;
+    border: 1px solid #1e40af;
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    line-height: 1.7;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    display: block;
+}
+
+textarea:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12),
+                0 0 18px rgba(14, 165, 233, 0.2);
+}
+
+textarea::placeholder {
+    color: #475569;
+    opacity: 1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SECTION TITLE + TEXT
+═══════════════════════════════════════════════════ */
+
+.section-title {
+    display: block;
+    margin-bottom: 10px;
+    color: #38bdf8;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.section-text {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   BUTTON
+   Improved: transition, hover lift, active press
+═══════════════════════════════════════════════════ */
+
+button {
+    background: linear-gradient(
+        135deg,
+        #0ea5e9,
+        #2563eb
+    );
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease,
+                opacity 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(14, 165, 233, 0.45);
+}
+
+button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.3);
+    opacity: 0.92;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   CARD
+═══════════════════════════════════════════════════ */
+
+.card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid #1e3a8a;
+    border-radius: 14px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+}
+
+.card h2,
+.card h3 {
+    margin-bottom: 15px;
+    color: #38bdf8;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════════ */
+
+.divider {
+    text-align: center;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin: 22px 0;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 44%;
+    height: 1px;
+    background: #1e293b;
+}
+
+.divider::before { left: 0; }
+.divider::after  { right: 0; }
+
+
+/* ═══════════════════════════════════════════════════
+   BUTTON AREA
+═══════════════════════════════════════════════════ */
+
+.button-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.analyze-btn {
+    padding: 15px 48px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-radius: 10px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ERROR BOX
+   Improved: flex layout, icon slot, smooth opacity
+   transition applied via JS at fade time only —
+   no flicker on initial render.
+═══════════════════════════════════════════════════ */
+
+.error-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(
+        135deg,
+        rgba(127, 29, 29, 0.95),
+        rgba(153, 27, 27, 0.85)
+    );
+    border: 1px solid rgba(220, 38, 38, 0.6);
+    color: #fecaca;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-weight: 500;
+    font-size: 14.5px;
+    line-height: 1.55;
+    box-shadow: 0 0 18px rgba(220, 38, 38, 0.15);
+    opacity: 1;
+    /* transition intentionally omitted here —
+       JS applies it only at fade time to prevent
+       flicker on initial render */
+}
+
+.error-icon {
+    font-size: 1.1rem;
+    color: #f87171;
+    flex-shrink: 0;
+}
+
+.error-text {
+    flex: 1;
+}
+
+.error-dismiss {
+    background: none;
+    border: none;
+    color: #fca5a5;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: 0.65;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+}
+
+.error-dismiss:hover {
+    opacity: 1;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   FORMAT BADGES
+   Supported extension pills inside upload card.
+═══════════════════════════════════════════════════ */
+
+.badge-allowed {
+    display: inline-block;
+    background: rgba(0, 255, 150, 0.07);
+    border: 1px solid rgba(0, 255, 150, 0.28);
+    color: #34d399;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 2px 9px;
+    border-radius: 4px;
+    margin: 0 3px;
+}
+
+.format-note {
+    font-size: 0.76rem;
+    color: #475569;
+    margin-top: 4px;
+    margin-bottom: 0;
+    letter-spacing: 0.02em;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   FILE UPLOAD — CUSTOM LABEL
+   Hides the raw browser input. The styled label
+   forwards clicks via matching for/id attributes.
+═══════════════════════════════════════════════════ */
+
+.file-input-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    pointer-events: none;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 14px 18px;
+    border: 1.5px dashed rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.025);
+    transition: border-color 0.25s ease,
+                background   0.25s ease;
+}
+
+.file-upload-label:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    background: rgba(56, 189, 248, 0.04);
+}
+
+.file-upload-label.file-selected {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(52, 211, 153, 0.04);
+    border-style: solid;
+}
+
+.upload-icon {
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.upload-label-text {
+    font-size: 0.87rem;
+    color: #64748b;
+    transition: color 0.2s ease;
+}
+
+.file-upload-label:hover .upload-label-text,
+.file-upload-label.file-selected .upload-label-text {
+    color: #cbd5e1;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   LISTS
+═══════════════════════════════════════════════════ */
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 10px;
+    color: #e2e8f0;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SEVERITY LEVELS
+═══════════════════════════════════════════════════ */
+
+.low      { color: #22c55e; }
+.informational { color: #94a3b8; }
+.medium   { color: #eab308; }
+.high     { color: #f97316; }
+.critical { color: #ef4444; text-shadow: 0 0 10px red; }
+
+
+/* ═══════════════════════════════════════════════════
+   LINKS
+═══════════════════════════════════════════════════ */
+
+a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-shadow: 0 0 10px #38bdf8;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   HR DIVIDER
+═══════════════════════════════════════════════════ */
+
+hr {
+    border: 1px solid #1e293b;
+    margin: 20px 0;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   TRUST ITEM
+═══════════════════════════════════════════════════ */
+
+.trust-item {
+    margin: 15px 0;
+    font-size: 20px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ACTION BUTTONS (result/download row)
+═══════════════════════════════════════════════════ */
+
+.action-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: #1e88e5;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 10px;
+    transition: background 0.2s ease,
+                transform  0.2s ease,
+                box-shadow 0.2s ease;
+    box-shadow: 0 0 12px rgba(30, 136, 229, 0.5);
+}
+
+.action-btn:hover {
+    background: #42a5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 136, 229, 0.45);
+    text-shadow: none;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   SCORE TABLE
+═══════════════════════════════════════════════════ */
+
+.score-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.score-table td {
+    padding: 12px;
+    border-bottom: 1px solid #1e293b;
+    font-size: 16px;
+    color: #e2e8f0;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   HEADER + HEADER ACTIONS
+═══════════════════════════════════════════════════ */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   REPORT BUTTON
+═══════════════════════════════════════════════════ */
+
+.report-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 24px;
+    min-width: 200px;
+    border-radius: 12px;
+    border: 1px solid #38bdf8;
+    background: rgba(56, 189, 248, 0.10);
+    color: #38bdf8;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.report-btn:hover {
+    background: rgba(56, 189, 248, 0.20);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.30);
+    transform: translateY(-2px);
+    text-shadow: none;
+}
